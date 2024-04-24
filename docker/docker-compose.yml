@@ -1,0 +1,63 @@
+version: '3.9'
+
+services:
+  unitgenius-rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'unitgenius-rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: '${RABBITMQ_USER:-guest}'
+      RABBITMQ_DEFAULT_PASS: '${RABBITMQ_PASS:-guest}'
+
+  unitgenius-inputservice:
+    image: liamvaessen/unitgenius-inputservice:latest
+    container_name: unitgenius-inputservice
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    depends_on:
+      - unitgenius-rabbitmq
+    environment:
+      RABBITMQ_HOST: 'unitgenius-rabbitmq'
+      RABBITMQ_USERNAME: '${RABBITMQ_USER:-guest}'
+      RABBITMQ_PASSWORD: '${RABBITMQ_PASS:-guest}'
+
+  unitgenius-outputservice:
+    image: liamvaessen/unitgenius-outputservice:latest
+    container_name: unitgenius-outputservice
+    restart: unless-stopped
+    ports:
+      - "8082:8080"
+    depends_on:
+      - unitgenius-rabbitmq
+    environment:
+      RABBITMQ_HOST: 'unitgenius-rabbitmq'
+      RABBITMQ_USERNAME: '${RABBITMQ_USER:-guest}'
+      RABBITMQ_PASSWORD: '${RABBITMQ_PASS:-guest}'
+
+  # unitgenius-webui:
+  #   image: liamvaessen/unitgenius-webui:latest
+  #   container_name: unitgenius-webui
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - unitgenius-inputservice
+  #     - unitgenius-outputservice
+
+  unitgenius-generationservice:
+    image: liamvaessen/unitgenius-generationservice:latest
+    container_name: unitgenius-generationservice
+    restart: unless-stopped
+    depends_on:
+      - unitgenius-rabbitmq
+    environment:
+      RABBITMQ_HOST: 'unitgenius-rabbitmq'
+      RABBITMQ_USERNAME: '${RABBITMQ_USER:-guest}'
+      RABBITMQ_PASSWORD: '${RABBITMQ_PASS:-guest}'
+
+networks:
+  rabbitmq_network:
+    driver: bridge
