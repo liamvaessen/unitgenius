@@ -12,7 +12,7 @@ services:
       RABBITMQ_DEFAULT_PASS: '${RABBITMQ_PASS:-guest}'
 
   unitgenius-inputservice:
-    image: liamvaessen/unitgenius-inputservice:latest
+    image: liamvaessen/unitgenius-inputservice:development
     container_name: unitgenius-inputservice
     restart: unless-stopped
     ports:
@@ -25,7 +25,7 @@ services:
       RABBITMQ_PASSWORD: '${RABBITMQ_PASS:-guest}'
 
   unitgenius-outputservice:
-    image: liamvaessen/unitgenius-outputservice:latest
+    image: liamvaessen/unitgenius-outputservice:development
     container_name: unitgenius-outputservice
     restart: unless-stopped
     ports:
@@ -48,7 +48,7 @@ services:
   #     - unitgenius-outputservice
 
   unitgenius-generationservice:
-    image: liamvaessen/unitgenius-generationservice:latest
+    image: liamvaessen/unitgenius-generationservice:development
     container_name: unitgenius-generationservice
     restart: unless-stopped
     depends_on:
