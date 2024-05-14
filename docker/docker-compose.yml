@@ -37,15 +37,15 @@ services:
       RABBITMQ_USERNAME: '${RABBITMQ_USER:-guest}'
       RABBITMQ_PASSWORD: '${RABBITMQ_PASS:-guest}'
 
-  # unitgenius-webui:
-  #   image: liamvaessen/unitgenius-webui:latest
-  #   container_name: unitgenius-webui
-  #   restart: unless-stopped
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - unitgenius-inputservice
-  #     - unitgenius-outputservice
+  unitgenius-webui:
+    image: liamvaessen/unitgenius-webui:latest
+    container_name: unitgenius-webui
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - unitgenius-inputservice
+      - unitgenius-outputservice
 
   unitgenius-generationservice:
     image: liamvaessen/unitgenius-generationservice:development
