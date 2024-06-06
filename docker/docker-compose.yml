@@ -12,7 +12,7 @@ services:
       RABBITMQ_DEFAULT_PASS: '${RABBITMQ_PASS:-guest}'
 
   unitgenius-inputservice:
-    image: liamvaessen/unitgenius-inputservice:development
+    image: liamvaessen/unitgenius-inputservice:latest
     container_name: unitgenius-inputservice
     restart: unless-stopped
     ports:
@@ -25,7 +25,7 @@ services:
       RABBITMQ_PASSWORD: '${RABBITMQ_PASS:-guest}'
 
   unitgenius-outputservice:
-    image: liamvaessen/unitgenius-outputservice:development
+    image: liamvaessen/unitgenius-outputservice:latest
     container_name: unitgenius-outputservice
     restart: unless-stopped
     ports:
@@ -42,18 +42,19 @@ services:
     container_name: unitgenius-webui
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "80:8080"
     depends_on:
       - unitgenius-inputservice
       - unitgenius-outputservice
 
   unitgenius-generationservice:
-    image: liamvaessen/unitgenius-generationservice:development
+    image: liamvaessen/openai-document-generation:latest
     container_name: unitgenius-generationservice
     restart: unless-stopped
     depends_on:
       - unitgenius-rabbitmq
     environment:
+      OpenAI_ApiKey: 'sk-proj-9b4b7Tbihggq61HbzvjwT3BlbkFJyvStXvUANom64c5wrxsE'
       RABBITMQ_HOST: 'unitgenius-rabbitmq'
       RABBITMQ_USERNAME: '${RABBITMQ_USER:-guest}'
       RABBITMQ_PASSWORD: '${RABBITMQ_PASS:-guest}'
