@@ -1,6 +1,49 @@
 version: '3.9'
 
 services:
+  unitgenius-registry:
+    image: liamvaessen/unitgenius-registry:latest
+    container_name: unitgenius-registry
+    expose:
+      - "8761"
+    environment:
+      spring.profiles.active: 'prod'
+
+  enable-database-auth:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: enable-database-auth
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: 'Y'
+      SA_PASSWORD: '${DB_ROOT_PASSWORD:-Secret1234}'
+    ports:
+      - "1433:1433"
+    expose:
+      - "1433"
+    volumes:
+      - db-data-auth:/var/opt/mssql
+
+  enable-service-api-auth:
+    image: liamvaessen/enable-service-api-auth:development
+    container_name: enable-service-api-auth
+    restart: unless-stopped
+    expose:
+      - "8080"
+    depends_on:
+      - enable-database-auth
+      - unitgenius-rabbitmq
+      - unitgenius-registry
+    environment:
+      ConnectionStrings__DefaultConnection: 'Server=enable-database-auth,1433;Database=auth-database;User Id=sa;Password=${DB_ROOT_PASSWORD:-Secret1234};TrustServerCertificate=true;'
+      Jwt__Key: 'MOp0d5xzAQSn6RS3WjoonoHozoaCXamDhsxgtxkwoyFCtp3WzWd0MsKc5dewNrrRA5km22hPhxOXFRSDA9y81rJH9HiObReKxnxqgu2hMcvUGCAWBWUv9yMCRlXTLdGPeqWyRSLkGLdQnI6yZl1mMNA5wl6KwYxLJH6mwdUV8OdovXOkuuwPlcFKuMLc6MoGDTf9PpS4mCcEJ7hlR8Ua3SQEh8SSn0pOMifkbDXQrQj0g1qSLaHwrqGtv1bnU9M8VQKpkBWh4J8gWolJG4tBKdeFS1YkJv1nokFZio9ukYNkUivli4O5sNISVLj2KsfVwbfrCKJRk6QyN6z0XASFVxIGqia6eY'
+      Jwt__Issuer: 'EnableSecurityIssuer'
+      Jwt__Audience: 'EnableSecurityAudience'
+      ENCRYPTION_KEY: '256bit32characterTesterKeyString'
+      RABBITMQ_HOST: 'unitgenius-rabbitmq'
+      RABBITMQ_USER: '${RABBITMQ_USER:-guest}'
+      RABBITMQ_PASS: '${RABBITMQ_PASS:-guest}'
+      EUREKA__CLIENT__SERVICEURL: 'http://unitgenius-registry:8761/eureka'
+
   unitgenius-rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: 'unitgenius-rabbitmq'
@@ -15,11 +58,14 @@ services:
     image: liamvaessen/unitgenius-inputservice:latest
     container_name: unitgenius-inputservice
     restart: unless-stopped
-    ports:
-      - "8081:8080"
+    expose:
+      - "8080"
     depends_on:
       - unitgenius-rabbitmq
     environment:
+      Jwt__Key: 'MOp0d5xzAQSn6RS3WjoonoHozoaCXamDhsxgtxkwoyFCtp3WzWd0MsKc5dewNrrRA5km22hPhxOXFRSDA9y81rJH9HiObReKxnxqgu2hMcvUGCAWBWUv9yMCRlXTLdGPeqWyRSLkGLdQnI6yZl1mMNA5wl6KwYxLJH6mwdUV8OdovXOkuuwPlcFKuMLc6MoGDTf9PpS4mCcEJ7hlR8Ua3SQEh8SSn0pOMifkbDXQrQj0g1qSLaHwrqGtv1bnU9M8VQKpkBWh4J8gWolJG4tBKdeFS1YkJv1nokFZio9ukYNkUivli4O5sNISVLj2KsfVwbfrCKJRk6QyN6z0XASFVxIGqia6eY'
+      Jwt__Issuer: 'EnableSecurityIssuer'
+      Jwt__Audience: 'EnableSecurityAudience'
       RABBITMQ_HOST: 'unitgenius-rabbitmq'
       RABBITMQ_USERNAME: '${RABBITMQ_USER:-guest}'
       RABBITMQ_PASSWORD: '${RABBITMQ_PASS:-guest}'
@@ -28,11 +74,14 @@ services:
     image: liamvaessen/unitgenius-outputservice:latest
     container_name: unitgenius-outputservice
     restart: unless-stopped
-    ports:
-      - "8082:8080"
+    expose:
+      - "8080"
     depends_on:
       - unitgenius-rabbitmq
     environment:
+      Jwt__Key: 'MOp0d5xzAQSn6RS3WjoonoHozoaCXamDhsxgtxkwoyFCtp3WzWd0MsKc5dewNrrRA5km22hPhxOXFRSDA9y81rJH9HiObReKxnxqgu2hMcvUGCAWBWUv9yMCRlXTLdGPeqWyRSLkGLdQnI6yZl1mMNA5wl6KwYxLJH6mwdUV8OdovXOkuuwPlcFKuMLc6MoGDTf9PpS4mCcEJ7hlR8Ua3SQEh8SSn0pOMifkbDXQrQj0g1qSLaHwrqGtv1bnU9M8VQKpkBWh4J8gWolJG4tBKdeFS1YkJv1nokFZio9ukYNkUivli4O5sNISVLj2KsfVwbfrCKJRk6QyN6z0XASFVxIGqia6eY'
+      Jwt__Issuer: 'EnableSecurityIssuer'
+      Jwt__Audience: 'EnableSecurityAudience'
       RABBITMQ_HOST: 'unitgenius-rabbitmq'
       RABBITMQ_USERNAME: '${RABBITMQ_USER:-guest}'
       RABBITMQ_PASSWORD: '${RABBITMQ_PASS:-guest}'
@@ -41,11 +90,29 @@ services:
     image: liamvaessen/unitgenius-webui:latest
     container_name: unitgenius-webui
     restart: unless-stopped
-    ports:
-      - "80:8080"
+    expose:
+      - "80"
     depends_on:
       - unitgenius-inputservice
       - unitgenius-outputservice
+    environment:
+      VUE_APP_UNITGENIUS_WEBUI_URL: 'http://localhost:80'
+      VUE_APP_UNITGENIUS_GATEWAY_URL: 'http://localhost:80/api'
+    
+  unitgenius-gateway:
+    image: liamvaessen/unitgenius-gateway:latest
+    container_name: unitgenius-gateway
+    ports:
+      - "80:8443"
+    depends_on:
+      - unitgenius-registry
+    environment:
+      SSL_ENABLED: 'false'
+      KEY_ALIAS: ${KEY_ALIAS:-liamvaessen}
+      KEY_STORE_PASSWORD: ${KEY_STORE_PASSWORD:-Liam1255}
+      spring.profiles.active: 'prod'
+      EUREKA_SERVER: 'http://unitgenius-registry:8761/eureka'
+      WEBUI_URL: 'http://unitgenius-webui:80'
 
   unitgenius-generationservice:
     image: liamvaessen/openai-document-generation:latest
@@ -58,6 +125,9 @@ services:
       RABBITMQ_HOST: 'unitgenius-rabbitmq'
       RABBITMQ_USERNAME: '${RABBITMQ_USER:-guest}'
       RABBITMQ_PASSWORD: '${RABBITMQ_PASS:-guest}'
+
+volumes:
+  db-data-auth:
 
 networks:
   rabbitmq_network:
