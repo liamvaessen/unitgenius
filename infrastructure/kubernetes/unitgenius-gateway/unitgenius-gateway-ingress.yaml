@@ -6,7 +6,7 @@ metadata:
 spec:
   ingressClassName: webapprouting.kubernetes.azure.com
   rules:
-  - host: cyberrytechnologies.nl
+  - host: unitgenius.cyberrytechnologies.nl
     http:
       paths:
       - pathType: Prefix

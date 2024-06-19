@@ -47,7 +47,7 @@ echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} Stored preference for servic
 
 #---------- Create Cluster ----------
 echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} ${YELLOW}Creating AKS cluster...${NC}"
-az aks create --resource-group unitgeniusResourceGroupEastUS --name unitgenius --service-principal $appId --client-secret $clientSecret --node-count 1 --generate-ssh-keys
+az aks create --resource-group unitgeniusResourceGroupEastUS --name unitgenius --service-principal $appId --client-secret $clientSecret --node-count 2 --generate-ssh-keys
 echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} ${GREEN}Created AKS cluster unitgenius.${NC}"
 
 
