@@ -1,0 +1,35 @@
+name: main
+
+on:
+    push:
+        branches: [ "main" ]
+    pull_request:
+        branches: [ "main" ]
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Login to Azure
+              uses: azure/login@v1
+              with:
+                creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+            - name: Get AKS credentials
+              run: az aks get-credentials --resource-group enableResourceGroupEastUS --name enable
+
+            - name: Apply Kubernetes manifests
+              run: |
+                kubectl apply -f ./infrastructure/kubernetes/.
+                kubectl apply -f ./infrastructure/kubernetes/enable-database-auth/.
+                kubectl apply -f ./infrastructure/kubernetes/enable-service-api-auth/.
+                kubectl apply -f ./infrastructure/kubernetes/unitgenius-rabbitmq/.
+                kubectl apply -f ./infrastructure/kubernetes/unitgenius-inputservice/.
+                kubectl apply -f ./infrastructure/kubernetes/unitgenius-outputservice/.
+                kubectl apply -f ./infrastructure/kubernetes/unitgenius-registry/.
+                kubectl apply -f ./infrastructure/kubernetes/unitgenius-gateway/.
+                kubectl apply -f ./infrastructure/kubernetes/unitgenius-webui/.
+                kubectl apply -f ./infrastructure/kubernetes/unitgenius-generationservice-openai-document/.

@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: unitgenius-gateway-ingress
+  namespace: unitgenius
+spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
+  rules:
+  - host: cyberrytechnologies.nl
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: unitgenius-gateway-service
+            port:
+              number: 80

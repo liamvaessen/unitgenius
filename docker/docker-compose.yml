@@ -121,7 +121,7 @@ services:
     depends_on:
       - unitgenius-rabbitmq
     environment:
-      OpenAI_ApiKey: 'sk-proj-9b4b7Tbihggq61HbzvjwT3BlbkFJyvStXvUANom64c5wrxsE'
+      OpenAI_ApiKey: '${OPENAI_APIKEY:-apikey}'
       RABBITMQ_HOST: 'unitgenius-rabbitmq'
       RABBITMQ_USERNAME: '${RABBITMQ_USER:-guest}'
       RABBITMQ_PASSWORD: '${RABBITMQ_PASS:-guest}'
