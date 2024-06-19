@@ -29,10 +29,6 @@ echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} Set subscription to $subscri
 echo "subscriptionId=$subscriptionId" >> preferences.env
 echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} Stored preference for subscriptionId: $subscriptionId"
 
-az aks get-credentials --resource-group unitgeniusResourceGroupEastUS --name unitgenius
-echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} Set kubectl context to AKS cluster unitgenius"
-
-
 # #---------- Create resource group ----------
 echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} ${YELLOW}Creating resource group...${NC}"
 az group create --name unitgeniusResourceGroupEastUS --location eastus
@@ -89,7 +85,7 @@ echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC} Press enter when completed:"
 read -r
 
 #---------- Commit and push change to main branch to deploy ----------
-echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} ${YELLOW}Trying to ommit and push change to main branch to deploy...${NC}"
+echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} ${YELLOW}Trying to commit and push change to main branch to deploy...${NC}"
 git add .
 git commit -m "Setup AKS cluster"
 git push origin main
