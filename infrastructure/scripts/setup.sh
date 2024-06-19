@@ -47,9 +47,6 @@ NC='\033[0m' # No Color
 
 # echo "appId=$appId" >> preferences.env
 # echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} Stored preference for service principal appId: $appId"
-# echo "clientSecret=$clientSecret" >> preferences.env
-# # echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} Stored preference for service principal clientSecret: $clientSecret"
-
 
 # #---------- Create Cluster ----------
 # echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} ${YELLOW}Creating AKS cluster...${NC}"
@@ -62,34 +59,33 @@ NC='\033[0m' # No Color
 # echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} Set kubectl context to AKS cluster unitgenius"
 
 
-#---------- Securely handle preferred secret values ----------
-source preferences.env
-echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} Before continuing, enter your (preffered) values for the following secret(s) in the Github repositories of the project:"
-echo -e ""
-echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}   - Repository: unitgenius"
-echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret key: AUTH_DB_CONNECTION_STRING"
-echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret value: the connection string to database for the auth functionality"
-echo -e ""
-echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}   - Repository: unitgenius, unitgenius-generationservice"
-echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret key: OPENAI_APIKEY"
-echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret value: your api key for OpenAI."
-echo -e ""
-echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}   - Repository: ALL repositories"
-echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret key: AZURE_CREDENTIALS"
-echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret value: enter the following object: 
-{
-  "'clientId'": ""$appId"",
-  "'clientSecret'": ""$clientSecret"",
-  "'tenantId'": ""$tenantId"",
-  "'subscriptionId'": ""$subscriptionId""
-}"
-echo -e ""
-echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}   - Repository: ALL repositories"
-echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret key: POSTMAN_APIKEY"
-echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret value: your api key for Postman. Can be set later but is required for integration tests in pipelines to work."
-echo -e ""
-echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC} Press enter when completed:"
-read -r
+# #---------- Securely handle preferred secret values ----------
+# echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} Before continuing, enter your (preffered) values for the following secret(s) in the Github repositories of the project:"
+# echo -e ""
+# echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}   - Repository: unitgenius"
+# echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret key: AUTH_DB_CONNECTION_STRING"
+# echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret value: the connection string to database for the auth functionality"
+# echo -e ""
+# echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}   - Repository: unitgenius, unitgenius-generationservice"
+# echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret key: OPENAI_APIKEY"
+# echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret value: your api key for OpenAI."
+# echo -e ""
+# echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}   - Repository: ALL repositories"
+# echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret key: AZURE_CREDENTIALS"
+# echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret value: enter the following object: 
+# {
+#   "'clientId'": ""$appId"",
+#   "'clientSecret'": ""$clientSecret"",
+#   "'tenantId'": ""$tenantId"",
+#   "'subscriptionId'": ""$subscriptionId""
+# }"
+# echo -e ""
+# echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}   - Repository: ALL repositories"
+# echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret key: POSTMAN_APIKEY"
+# echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC}     Secret value: your api key for Postman. Can be set later but is required for integration tests in pipelines to work."
+# echo -e ""
+# echo -e "${PURPLE}[UnitGenius Setup Tool]:${NC} Press enter when completed:"
+# read -r
 
 #---------- Commit and push change to main branch to deploy ----------
 echo -e "\n\n${PURPLE}[UnitGenius Setup Tool]:${NC} ${YELLOW}Trying to ommit and push change to main branch to deploy...${NC}"
