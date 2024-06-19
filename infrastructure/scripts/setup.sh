@@ -79,6 +79,7 @@ echo -e "[UnitGenius Setup Tool]:     Secret key: POSTMAN_APIKEY"
 echo -e "[UnitGenius Setup Tool]:     Secret value: your api key for Postman. Can be set later but is required for integration tests in pipelines to work."
 echo -e ""
 echo -e "[UnitGenius Setup Tool]: Press enter when completed:"
+read -r
 
 #---------- Commit and push change to main branch to deploy ----------
 echo -e "\n\n[UnitGenius Setup Tool]: Commit and push change to main branch to deploy"
